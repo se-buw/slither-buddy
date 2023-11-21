@@ -9,16 +9,32 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class App extends Application {
+public class Slither extends Application {
+
+    private static final int width_ = 1200;
+    private static final int height_ = 900;
+    private static final int tileSize_ = height_/30;
+    private int playerOneYPos_ = height_/2;
+    private int playerTwoYPos_ = height_/2;
+    private int playerOneXPos_ = width_/4;
+    private int playerTwoXPos_ = width_ - width_/4;
+
 
     @Override
     public void start(Stage stage) {
+        stage.setTitle("Slither");
+
+        /*
         String javaVersion = System.getProperty("java.version");
         String javafxVersion = System.getProperty("javafx.version");
         Label label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
         Scene scene = new Scene(new StackPane(label), 640, 480);
         stage.setScene(scene);
         stage.show();
+
+         */
+
+
     }
 
     public static void main(String[] args) {
