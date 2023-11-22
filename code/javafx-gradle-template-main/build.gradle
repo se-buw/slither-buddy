@@ -31,7 +31,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'de.buw.i2p.App'
+    mainClass = 'de.buw.i2p.Slither'
 }
 
 javafx {
