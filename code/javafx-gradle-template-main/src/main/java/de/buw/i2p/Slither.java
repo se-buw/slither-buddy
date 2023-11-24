@@ -37,11 +37,13 @@ public class Slither extends Application {
     @Override
     public void start(Stage stage) {
         stage.setTitle("Slither");
+        //the snakes will be drawn on graphics context of the canvas
         Canvas can = new Canvas(width_, height_);
         GraphicsContext gc = can.getGraphicsContext2D();
         Duration cycleDur = Duration.millis(10);
         Timeline timeLine = new Timeline(new KeyFrame(cycleDur, event -> {run(gc);}));
         timeLine.setCycleCount(Timeline.INDEFINITE);
+
 
         can.setFocusTraversable(true);
         can.setOnKeyPressed(event -> {gameStarted_ = true;});
@@ -70,7 +72,7 @@ public class Slither extends Application {
         stage.show();
         timeLine.play();
     }
-
+    //runs the game
     private void run(GraphicsContext gc){
         if(gameStarted_){
             System.out.println("test");
