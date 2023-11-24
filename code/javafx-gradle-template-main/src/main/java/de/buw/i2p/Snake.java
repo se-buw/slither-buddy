@@ -1,5 +1,6 @@
 package de.buw.i2p;
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -14,8 +15,9 @@ public class Snake {
     private int nextYDirection_;
     private int nextXDirection_;
     private ArrayList<Point2D> snakeSegments_;
+    private Color snakecolor_;
 
-    public Snake(int size, int segmentSize, int speed, Point2D head, int x_direction, int y_direction) {
+    public Snake(int size, int segmentSize, int speed, Point2D head, int x_direction, int y_direction, Color snakecolor) {
         this.size_ = size;
         segmentSize_ = segmentSize;
         this.speed_ = speed;
@@ -24,13 +26,12 @@ public class Snake {
         this.snakeSegments_ = new ArrayList<>();
         snakeSegments_.add(head);
         for (int i = 1; i < size ; i++){
-            snakeSegments_.add(new Point2D(head.getX() - x_direction * segmentSize_ * i, head.getY() - yDirection_ * segmentSize_ * i));
+            snakeSegments_.add(new Point2D(head.getX() - xDirection_ * segmentSize_ * i, head.getY() - yDirection_ * segmentSize_ * i));
         }
+        this.snakecolor_ = snakecolor;
     }
 
-    public void setSpeed(int speed) {
-        this.speed_ = speed;
-    }
+
     // buffers next move because snakes have to move on the tiles
     // no edge cases because input is tightly controlled
     public void updateNextDirection(int xDirection, int yDirection) {
@@ -46,6 +47,18 @@ public class Snake {
         xDirection_ = nextXDirection_;
         yDirection_ = nextYDirection_;
     }
-
-
+//getter methods
+    public ArrayList<Point2D> getSnakeSegments_() {
+        return snakeSegments_;
+    }
+    public  Color getSnakecolor_(){
+        return snakecolor_;
+    }
+    public  int getSegmentSize_(){
+        return segmentSize_;
+    }
+ //setter methods
+    public void setSpeed(int speed) {
+        this.speed_ = speed;
+    }
 }

@@ -3,6 +3,7 @@
  */
 package de.buw.i2p;
 
+import com.google.common.graph.Graph;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -15,14 +16,17 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import java.awt.*;
+import java.util.ArrayList;
 
+//Game class
 public class Slither extends Application {
 
     private static final int width_ = 800;
     private static final int height_ = 600;
-    private static final int tileSize_ = height_/10;
+    private static final int tileSize_ = height_/12;
     private int playerOneYPos_ = height_/2;
     private int playerTwoYPos_ = height_/2;
     private int playerOneXPos_ = width_/4;
@@ -30,8 +34,10 @@ public class Slither extends Application {
     private int playerOneScore = 0;
     private int playerTwoScore = 0;
     private boolean gameStarted_ = false;
-    private Snake P1 = new Snake(3, tileSize_, 1, new Point2D(playerOneXPos_, playerOneYPos_), 1, 0);
-    private Snake P2 = new Snake(3, tileSize_, 1, new Point2D(playerTwoXPos_, playerTwoYPos_), -1, 0);
+    //create snakes
+    private Snake P1 = new Snake(3, tileSize_, 1, new Point2D(playerOneXPos_, playerOneYPos_), 0, 1,Color.RED);
+    private Snake P2 = new Snake(3, tileSize_, 1, new Point2D(playerTwoXPos_, playerTwoYPos_), 0, 1,Color.BLUE);
+
 
 
     @Override
@@ -71,17 +77,31 @@ public class Slither extends Application {
         stage.setResizable(false);
         stage.show();
         timeLine.play();
+
+    }
+    public void draw(GraphicsContext gc,Snake snake ){
+        ArrayList<Point2D> snakeSegments = snake.getSnakeSegments_();
+        for(Point2D segment : snakeSegments){
+            gc.setFill(snake.getSnakecolor_());
+            gc.fillRect(segment.getX(),segment.getY(),snake.getSegmentSize_(),snake.getSegmentSize_());
+
+        }
     }
     //runs the game
     private void run(GraphicsContext gc){
-        if(gameStarted_){
-            System.out.println("test");
+        if(gameStarted_) {
+
+        }
+        else {
+            draw(gc, P1);
+            draw(gc, P2);
         }
     }
 
+
     public static void main(String[] args) {
         launch();
-        //testt
     }
+
 
 }
