@@ -52,22 +52,29 @@ public class Snake {
     public void move(){
         for (int i = size_ - 1; i > 0; i--) {
             SnakeSegment prevSegment = snakeSegments_.get(i - 1);
-            //System.out.println("prev seg x:" + prevSegment.getX() + " prev seg y: " +prevSegment.getY()  );
             SnakeSegment currSegment = snakeSegments_.get(i);
-            currSegment.setX(prevSegment.getX());
-            currSegment.setY(prevSegment.getY());
-            //System.out.println("segment x: " + snakeSegments_.get(i).getX() + ", segment y: " + snakeSegments_.get(i).getY() + " " + snakeSegments_.size() + "\n");
+
+            double deltaX = prevSegment.getX() - currSegment.getX();
+            double deltaY = prevSegment.getY() - currSegment.getY();
+            double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+            if (distance > 0) {
+                double ratio = speed_ / distance;
+                double moveX = ratio * deltaX;
+                double moveY = ratio * deltaY;
+                currSegment.setX(currSegment.getX() + moveX);
+                currSegment.setY(currSegment.getY() + moveY);
+            }
         }
 
         SnakeSegment head = snakeSegments_.get(0);
         head.setX(head.getX() + xDirection_ * speed_);
         head.setY(head.getY() + yDirection_ * speed_);
-        //System.out.println("first segment: " + snakeSegments_.get(0).getY() + ", second segment: " + snakeSegments_.get(1).getY() + ", third segment: " + snakeSegments_.get(2).getY() + "\n" );
     }
 
     public void draw(GraphicsContext gc){
-        for(SnakeSegment segment : snakeSegments_){
-            gc.setFill(snakecolor_);
+        gc.setFill(snakecolor_);
+        for(SnakeSegment segment : getSnakeSegments_()){
             gc.fillRect(segment.getX(),segment.getY(),segmentSize_,segmentSize_);
         }
     }

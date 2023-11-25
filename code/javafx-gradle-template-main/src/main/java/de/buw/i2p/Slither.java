@@ -48,7 +48,7 @@ public class Slither extends Application {
         //the snakes will be drawn on graphics context of the canvas
         Canvas can = new Canvas(width_, height_);
         GraphicsContext gc = can.getGraphicsContext2D();
-        Duration cycleDur = Duration.millis(1000);
+        Duration cycleDur = Duration.millis(100);
         Timeline timeLine = new Timeline(new KeyFrame(cycleDur, event -> {run(gc, P1, P2);}));
         timeLine.setCycleCount(Timeline.INDEFINITE);
 
@@ -88,11 +88,11 @@ public class Slither extends Application {
         if(gameStarted_) {
             P1.move();
             P1.draw(gc);
-            /*
-            P2.move();
-            draw(gc, P2);
 
-             */
+            P2.move();
+            P2.draw(gc);
+
+
 
         }
         else {
