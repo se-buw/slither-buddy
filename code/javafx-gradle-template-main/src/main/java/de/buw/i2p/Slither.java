@@ -35,19 +35,21 @@ public class Slither extends Application {
     private int playerTwoScore = 0;
     private boolean gameStarted_ = false;
     //create snakes
-    private Snake P1 = new Snake(3, tileSize_, 1, new Point2D(playerOneXPos_, playerOneYPos_), 0, 1,Color.RED);
-    private Snake P2 = new Snake(3, tileSize_, 1, new Point2D(playerTwoXPos_, playerTwoYPos_), 0, 1,Color.BLUE);
+    //private Snake P1 = new Snake(3, tileSize_, 1, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, 1,Color.RED);
+    //private Snake P2 = new Snake(3, tileSize_, 1, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, 1,Color.BLUE);
 
 
 
     @Override
     public void start(Stage stage) {
+        Snake P1 = new Snake(3, tileSize_, 1, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, 1,Color.RED);
+        Snake P2 = new Snake(3, tileSize_, 1, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, 1,Color.BLUE);
         stage.setTitle("Slither");
         //the snakes will be drawn on graphics context of the canvas
         Canvas can = new Canvas(width_, height_);
         GraphicsContext gc = can.getGraphicsContext2D();
-        Duration cycleDur = Duration.millis(10);
-        Timeline timeLine = new Timeline(new KeyFrame(cycleDur, event -> {run(gc);}));
+        Duration cycleDur = Duration.millis(1000);
+        Timeline timeLine = new Timeline(new KeyFrame(cycleDur, event -> {run(gc, P1, P2);}));
         timeLine.setCycleCount(Timeline.INDEFINITE);
 
 
@@ -79,22 +81,23 @@ public class Slither extends Application {
         timeLine.play();
 
     }
-    public void draw(GraphicsContext gc,Snake snake ){
-        ArrayList<Point2D> snakeSegments = snake.getSnakeSegments_();
-        for(Point2D segment : snakeSegments){
-            gc.setFill(snake.getSnakecolor_());
-            gc.fillRect(segment.getX(),segment.getY(),snake.getSegmentSize_(),snake.getSegmentSize_());
 
-        }
-    }
     //runs the game
-    private void run(GraphicsContext gc){
+    private void run(GraphicsContext gc, Snake P1, Snake P2){
+        gc.clearRect(0, 0, width_, height_);
         if(gameStarted_) {
+            P1.move();
+            P1.draw(gc);
+            /*
+            P2.move();
+            draw(gc, P2);
+
+             */
 
         }
         else {
-            draw(gc, P1);
-            draw(gc, P2);
+            //draw(gc, P1);
+            //draw(gc, P2);
         }
     }
 
