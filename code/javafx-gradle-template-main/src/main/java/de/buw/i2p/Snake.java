@@ -43,7 +43,7 @@ public class Snake {
     }
 
     public void move(){
-        for (int i = size_ - 1; i > 0; i--) {
+        for (int i = snakeSegments_.size() - 1; i > 0; i--) {
             SnakeSegment prev = snakeSegments_.get(i - 1);
             SnakeSegment newCurr = new SnakeSegment(prev.getX(), prev.getY());
             snakeSegments_.set(i, newCurr);
@@ -51,6 +51,7 @@ public class Snake {
         SnakeSegment head = snakeSegments_.get(0);
         head.setX(head.getX() + xDirection_);
         head.setY(head.getY() + yDirection_);
+        //System.out.println("test");
     }
 
     public boolean outOfBounds(int width, int height){
@@ -86,6 +87,10 @@ public class Snake {
         for(SnakeSegment segment : getSnakeSegments_()){
             gc.fillRect(segment.getX() * segmentSize_,segment.getY() * segmentSize_, segmentSize_,segmentSize_);
         }
+    }
+
+    public void elongate(){
+        snakeSegments_.add(new SnakeSegment(-100, -100));
     }
 //getter methods
     public ArrayList<SnakeSegment> getSnakeSegments_() {

@@ -19,7 +19,9 @@ import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import java.awt.*;
+import java.security.Key;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 //Game class
 public class Slither extends Application {
@@ -42,13 +44,24 @@ public class Slither extends Application {
 
     @Override
     public void start(Stage stage) {
-        Snake P1 = new Snake(5, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, 1, tileSize_, Color.RED);
-        Snake P2 = new Snake(5, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, 1, tileSize_, Color.BLUE);
+        Snake P1 = new Snake(5, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, -1, tileSize_, Color.RED);
+        Snake P2 = new Snake(5, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, -1, tileSize_, Color.BLUE);
         stage.setTitle("Slither");
         //the snakes will be drawn on graphics context of the canvas
         Canvas can = new Canvas(width_ * tileSize_, height_ * tileSize_);
         Duration cycleDur = Duration.millis(500);
-        Timeline timeLine = new Timeline(new KeyFrame(cycleDur, event -> {run(can, P1, P2);}));
+        AtomicInteger executionCount = new AtomicInteger(0);
+        KeyFrame keyframe = new KeyFrame(cycleDur, event -> {
+            run(can, P1, P2);
+            int count = executionCount.incrementAndGet();
+            if (count % 5 == 0) {
+                System.out.println(count);
+                P1.elongate();
+                P2.elongate();
+            }
+        });
+        Timeline timeLine = new Timeline();
+        timeLine.getKeyFrames().add(keyframe);
         timeLine.setCycleCount(Timeline.INDEFINITE);
 
 

@@ -9,6 +9,11 @@ public class SnakeSegment {
         this.y = y;
     }
 
+    public SnakeSegment(SnakeSegment other){
+        this.x = other.x;
+        this.y = other.y;
+    }
+
     public double getX() {
         return x;
     }
