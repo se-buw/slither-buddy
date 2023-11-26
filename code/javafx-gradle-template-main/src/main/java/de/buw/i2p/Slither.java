@@ -24,12 +24,12 @@ import java.util.ArrayList;
 //Game class
 public class Slither extends Application {
 
-    private static final int width_ = 800;
-    private static final int height_ = 600;
-    private static final int tileSize_ = height_/12;
+    private static final int width_ = 20;
+    private static final int height_ = 20;
+    private static final int tileSize_ = 30;
     private int playerOneYPos_ = height_/2;
-    private int playerTwoYPos_ = height_/2;
-    private int playerOneXPos_ = width_/4;
+    private int playerTwoYPos_ = height_/2 ;
+    private int playerOneXPos_ = width_/4 ;
     private int playerTwoXPos_ = width_ - width_/4;
     private int playerOneScore = 0;
     private int playerTwoScore = 0;
@@ -42,14 +42,13 @@ public class Slither extends Application {
 
     @Override
     public void start(Stage stage) {
-        Snake P1 = new Snake(3, tileSize_, 1, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, 1,Color.RED);
-        Snake P2 = new Snake(3, tileSize_, 1, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, 1,Color.BLUE);
+        Snake P1 = new Snake(4, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, 1, tileSize_, Color.RED);
+        Snake P2 = new Snake(4, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, 1, tileSize_, Color.BLUE);
         stage.setTitle("Slither");
         //the snakes will be drawn on graphics context of the canvas
-        Canvas can = new Canvas(width_, height_);
-        GraphicsContext gc = can.getGraphicsContext2D();
-        Duration cycleDur = Duration.millis(100);
-        Timeline timeLine = new Timeline(new KeyFrame(cycleDur, event -> {run(gc, P1, P2);}));
+        Canvas can = new Canvas(width_ * tileSize_, height_ * tileSize_);
+        Duration cycleDur = Duration.millis(500);
+        Timeline timeLine = new Timeline(new KeyFrame(cycleDur, event -> {run(can, P1, P2);}));
         timeLine.setCycleCount(Timeline.INDEFINITE);
 
 
@@ -58,8 +57,8 @@ public class Slither extends Application {
 
         // create background tiles
         GridPane grid = new GridPane();
-        for (int i = 0; i < width_/tileSize_; i++){
-            for (int j = 0; j < height_/tileSize_; j++){
+        for (int i = 0; i < width_; i++){
+            for (int j = 0; j < height_; j++){
                 Pane pane = new Pane();
                 pane.setPrefSize(tileSize_, tileSize_);
                 if ((i+j) % 2 == 0){
@@ -83,21 +82,62 @@ public class Slither extends Application {
     }
 
     //runs the game
-    private void run(GraphicsContext gc, Snake P1, Snake P2){
-        gc.clearRect(0, 0, width_, height_);
+    private void run(Canvas can, Snake P1, Snake P2){
+        GraphicsContext gc = can.getGraphicsContext2D();
+
+        gc.clearRect(0, 0, width_ * tileSize_, height_ * tileSize_);
+
         if(gameStarted_) {
+
+
+            can.setOnKeyPressed(event -> {
+                switch(event.getCode()){
+
+                    case UP:
+                        P2.updateDirection(0, -1);
+                        break;
+                    case DOWN:
+                        P2.updateDirection(0, 1);
+                        break;
+                    case LEFT:
+                        P2.updateDirection(-1, 0);
+                        break;
+                    case RIGHT:
+                        P2.updateDirection(1, 0);
+                        break;
+                    case W:
+                        P1.updateDirection(0, -1);
+                        break;
+                    case S:
+                        P1.updateDirection(0, 1);
+                        break;
+                    case A:
+                        P1.updateDirection(-1, 0);
+                        break;
+                    case D:
+                        P1.updateDirection(1, 0);
+                        break;
+
+                }
+            });
+
+
+
+
+
+
+            if (P1.outOfBounds(width_, height_) || P2.outOfBounds(width_, height_)){
+                System.out.println("out of bounds");
+            }
             P1.move();
             P1.draw(gc);
-
             P2.move();
             P2.draw(gc);
 
-
-
         }
         else {
-            //draw(gc, P1);
-            //draw(gc, P2);
+            P1.draw(gc);
+            P2.draw(gc);
         }
     }
 
