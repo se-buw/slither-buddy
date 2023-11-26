@@ -12,6 +12,7 @@ public class Snake {
     private int yDirection_;
     private int segmentSize_;
     private Color snakecolor_;
+    private boolean alive_ = true;
     private ArrayList<SnakeSegment> snakeSegments_;
 
     public Snake(int size, SnakeSegment head, int x_direction, int y_direction, int segmentSize, Color snakecolor) {
@@ -54,11 +55,30 @@ public class Snake {
 
     public boolean outOfBounds(int width, int height){
         SnakeSegment head = snakeSegments_.get(0);
+        if (head.getX() <= 0 || head.getX() >= width || head.getY() <= 0 || head.getY() >= height){
+            alive_ = false;
+        }
         return head.getX() <= 0 || head.getX() >= width || head.getY() <= 0 || head.getY() >= height;
     }
 
-    public boolean collision(Snake snake){
-        return true;
+    public boolean collision(Snake otherSnake){
+        SnakeSegment head = snakeSegments_.get(0);
+        //collision with other snake
+        for (SnakeSegment segment : otherSnake.snakeSegments_){
+            if ((head.getX() == segment.getX()) && (head.getY() == segment.getY())){
+                alive_ = false;
+                return true;
+            }
+        }
+        //collision with self
+        for (int i = 1; i < snakeSegments_.size(); i++){
+            if ((head.getX() == snakeSegments_.get(i).getX()) && (head.getY() == snakeSegments_.get(i).getY())){
+                alive_ = false;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void draw(GraphicsContext gc){
@@ -77,5 +97,6 @@ public class Snake {
     //for testing remove later
     public int getxDirection_(){ return xDirection_;}
     public int getyDirection_(){ return yDirection_;}
+    public boolean isAlive_(){return alive_;}
  //setter methods
 }

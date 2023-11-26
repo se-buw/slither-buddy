@@ -42,8 +42,8 @@ public class Slither extends Application {
 
     @Override
     public void start(Stage stage) {
-        Snake P1 = new Snake(4, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, 1, tileSize_, Color.RED);
-        Snake P2 = new Snake(4, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, 1, tileSize_, Color.BLUE);
+        Snake P1 = new Snake(5, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, 1, tileSize_, Color.RED);
+        Snake P2 = new Snake(5, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, 1, tileSize_, Color.BLUE);
         stage.setTitle("Slither");
         //the snakes will be drawn on graphics context of the canvas
         Canvas can = new Canvas(width_ * tileSize_, height_ * tileSize_);
@@ -89,51 +89,65 @@ public class Slither extends Application {
 
         if(gameStarted_) {
 
+            if (P1.isAlive_() && P2.isAlive_()){
+                can.setOnKeyPressed(event -> {
+                    switch(event.getCode()){
 
-            can.setOnKeyPressed(event -> {
-                switch(event.getCode()){
+                        case UP:
+                            P2.updateDirection(0, -1);
+                            break;
+                        case DOWN:
+                            P2.updateDirection(0, 1);
+                            break;
+                        case LEFT:
+                            P2.updateDirection(-1, 0);
+                            break;
+                        case RIGHT:
+                            P2.updateDirection(1, 0);
+                            break;
+                        case W:
+                            P1.updateDirection(0, -1);
+                            break;
+                        case S:
+                            P1.updateDirection(0, 1);
+                            break;
+                        case A:
+                            P1.updateDirection(-1, 0);
+                            break;
+                        case D:
+                            P1.updateDirection(1, 0);
+                            break;
 
-                    case UP:
-                        P2.updateDirection(0, -1);
-                        break;
-                    case DOWN:
-                        P2.updateDirection(0, 1);
-                        break;
-                    case LEFT:
-                        P2.updateDirection(-1, 0);
-                        break;
-                    case RIGHT:
-                        P2.updateDirection(1, 0);
-                        break;
-                    case W:
-                        P1.updateDirection(0, -1);
-                        break;
-                    case S:
-                        P1.updateDirection(0, 1);
-                        break;
-                    case A:
-                        P1.updateDirection(-1, 0);
-                        break;
-                    case D:
-                        P1.updateDirection(1, 0);
-                        break;
+                    }
+                });
 
+                if (P1.outOfBounds(width_, height_) || P2.outOfBounds(width_, height_)){
+                    System.out.println("out of bounds");
                 }
-            });
 
+                if (P1.collision(P2)){
+                    System.out.println("collision");
+                }
 
+                if (P2.collision(P1)){
+                    System.out.println("collision");
+                }
 
-
-
-
-            if (P1.outOfBounds(width_, height_) || P2.outOfBounds(width_, height_)){
-                System.out.println("out of bounds");
+                P1.move();
+                P1.draw(gc);
+                P2.move();
+                P2.draw(gc);
             }
-            P1.move();
-            P1.draw(gc);
-            P2.move();
-            P2.draw(gc);
-
+            else if (!P1.isAlive_()){
+                //todo display "P2 won!" in middle and reset game on click
+                System.out.println("P2 won!");
+            }
+            else if (!P2.isAlive_()){
+                System.out.println("P1 won!");
+            }
+            else{
+                System.out.println("Draw!");
+            }
         }
         else {
             P1.draw(gc);
