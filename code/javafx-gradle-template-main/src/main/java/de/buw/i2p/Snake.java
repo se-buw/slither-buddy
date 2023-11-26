@@ -54,32 +54,27 @@ public class Snake {
         //System.out.println("test");
     }
 
-    public boolean outOfBounds(int width, int height){
+    public void outOfBounds(int width, int height){
         SnakeSegment head = snakeSegments_.get(0);
         if (head.getX() <= 0 || head.getX() >= width || head.getY() <= 0 || head.getY() >= height){
             alive_ = false;
         }
-        return head.getX() <= 0 || head.getX() >= width || head.getY() <= 0 || head.getY() >= height;
     }
 
-    public boolean collision(Snake otherSnake){
+    public void collision(Snake otherSnake){
         SnakeSegment head = snakeSegments_.get(0);
         //collision with other snake
         for (SnakeSegment segment : otherSnake.snakeSegments_){
             if ((head.getX() == segment.getX()) && (head.getY() == segment.getY())){
                 alive_ = false;
-                return true;
             }
         }
         //collision with self
         for (int i = 1; i < snakeSegments_.size(); i++){
             if ((head.getX() == snakeSegments_.get(i).getX()) && (head.getY() == snakeSegments_.get(i).getY())){
                 alive_ = false;
-                return true;
             }
         }
-
-        return false;
     }
 
     public void draw(GraphicsContext gc){

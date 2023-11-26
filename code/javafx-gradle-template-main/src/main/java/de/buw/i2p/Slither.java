@@ -8,13 +8,18 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -37,36 +42,16 @@ public class Slither extends Application {
     private int playerTwoScore = 0;
     private boolean gameStarted_ = false;
     //create snakes
-    //private Snake P1 = new Snake(3, tileSize_, 1, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, 1,Color.RED);
-    //private Snake P2 = new Snake(3, tileSize_, 1, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, 1,Color.BLUE);
+    private Snake P1 = new Snake(5, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, -1, tileSize_, Color.RED);
+    private Snake P2 = new Snake(5, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, -1, tileSize_, Color.BLUE);
 
 
 
     @Override
     public void start(Stage stage) {
-        Snake P1 = new Snake(5, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, -1, tileSize_, Color.RED);
-        Snake P2 = new Snake(5, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, -1, tileSize_, Color.BLUE);
         stage.setTitle("Slither");
-        //the snakes will be drawn on graphics context of the canvas
-        Canvas can = new Canvas(width_ * tileSize_, height_ * tileSize_);
-        Duration cycleDur = Duration.millis(500);
-        AtomicInteger executionCount = new AtomicInteger(0);
-        KeyFrame keyframe = new KeyFrame(cycleDur, event -> {
-            run(can, P1, P2);
-            int count = executionCount.incrementAndGet();
-            if (count % 5 == 0) {
-                System.out.println(count);
-                P1.elongate();
-                P2.elongate();
-            }
-        });
-        Timeline timeLine = new Timeline();
-        timeLine.getKeyFrames().add(keyframe);
-        timeLine.setCycleCount(Timeline.INDEFINITE);
 
-
-        can.setFocusTraversable(true);
-        can.setOnKeyPressed(event -> {gameStarted_ = true;});
+        StackPane stackPane = new StackPane();
 
         // create background tiles
         GridPane grid = new GridPane();
@@ -83,10 +68,31 @@ public class Slither extends Application {
                 grid.add(pane, i, j);
             }
         }
-
-        StackPane stackPane = new StackPane();
         stackPane.getChildren().add(grid);
+
+        //the snakes will be drawn on graphics context of the canvas
+        Canvas can = new Canvas(width_ * tileSize_, height_ * tileSize_);
+        can.setFocusTraversable(true);
+        can.setOnKeyPressed(event -> {gameStarted_ = true;});
         stackPane.getChildren().add(can);
+
+        //setup timeline
+        Timeline timeLine = new Timeline();
+        timeLine.setCycleCount(Timeline.INDEFINITE);
+
+        Duration cycleDur = Duration.millis(500);
+        AtomicInteger executionCount = new AtomicInteger(0);
+        KeyFrame keyframe = new KeyFrame(cycleDur, event -> {
+            run(stackPane, timeLine);
+            int count = executionCount.incrementAndGet();
+            if (count % 5 == 0) {
+                P1.elongate();
+                P2.elongate();
+            }
+        });
+        timeLine.getKeyFrames().add(keyframe);
+
+
         stage.setScene(new Scene(stackPane));
         stage.setResizable(false);
         stage.show();
@@ -95,7 +101,8 @@ public class Slither extends Application {
     }
 
     //runs the game
-    private void run(Canvas can, Snake P1, Snake P2){
+    private void run(StackPane stackPane, Timeline timeline){
+        Canvas can = (Canvas) stackPane.getChildren().get(1);
         GraphicsContext gc = can.getGraphicsContext2D();
 
         gc.clearRect(0, 0, width_ * tileSize_, height_ * tileSize_);
@@ -134,33 +141,64 @@ public class Slither extends Application {
                     }
                 });
 
-                if (P1.outOfBounds(width_, height_) || P2.outOfBounds(width_, height_)){
-                    System.out.println("out of bounds");
-                }
-
-                if (P1.collision(P2)){
-                    System.out.println("collision");
-                }
-
-                if (P2.collision(P1)){
-                    System.out.println("collision");
-                }
+                P1.outOfBounds(width_, height_);
+                P2.outOfBounds(width_, height_);
+                P1.collision(P2);
+                P2.collision(P1);
 
                 P1.move();
                 P1.draw(gc);
                 P2.move();
                 P2.draw(gc);
             }
-            else if (!P1.isAlive_()){
-                //todo display "P2 won!" in middle and reset game on click
-                System.out.println("P2 won!");
-            }
-            else if (!P2.isAlive_()){
-                System.out.println("P1 won!");
-            }
             else{
-                System.out.println("Draw!");
+                timeline.stop();
+                VBox vBox = new VBox();
+                final VBox[] finalVBox = {vBox};
+                ToggleButton toggleButton = new ToggleButton("Play again!");
+                toggleButton.setOnAction(event -> {
+                    P1 = new Snake(5, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, -1, tileSize_, Color.RED);
+                    P2 = new Snake(5, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, -1, tileSize_, Color.BLUE);
+                    stackPane.getChildren().remove(finalVBox[0]);
+                    finalVBox[0] = null;
+                    timeline.play();
+                    //gameStarted_ = false;
+                });
+                vBox.getChildren().add(toggleButton);
+
+                if (!P1.isAlive_() && P2.isAlive_()){
+
+                    Text text = new Text("P2 won!");
+                    text.setFill(P2.getSnakecolor_());
+                    text.setFont(Font.font(50));
+
+                    vBox.getChildren().add(text);
+                    vBox.setAlignment(Pos.CENTER);
+                    stackPane.getChildren().add(finalVBox[0]);
+
+                }
+                else if (!P2.isAlive_() && P1.isAlive_()){
+
+                    Text text = new Text("P1 won!");
+                    text.setFill(P1.getSnakecolor_());
+                    text.setFont(Font.font(50));
+
+                    vBox.getChildren().add(text);
+                    vBox.setAlignment(Pos.CENTER);
+                    stackPane.getChildren().add(finalVBox[0]);
+                }
+                else{
+
+                    Text text = new Text("Draw!");
+                    text.setFill(Color.PURPLE);
+                    text.setFont(Font.font(50));
+
+                    vBox.getChildren().add(text);
+                    vBox.setAlignment(Pos.CENTER);
+                    stackPane.getChildren().add(finalVBox[0]);
+                }
             }
+
         }
         else {
             P1.draw(gc);
