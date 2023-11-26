@@ -3,16 +3,13 @@
  */
 package de.buw.i2p;
 
-import com.google.common.graph.Graph;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -23,14 +20,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-import java.awt.*;
-import java.security.Key;
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 //Game class
 public class Slither extends Application {
-
+//
     private static final int width_ = 20;
     private static final int height_ = 20;
     private static final int tileSize_ = 30;
@@ -73,7 +67,7 @@ public class Slither extends Application {
         //the snakes will be drawn on graphics context of the canvas
         Canvas can = new Canvas(width_ * tileSize_, height_ * tileSize_);
         can.setFocusTraversable(true);
-        can.setOnKeyPressed(event -> {gameStarted_ = true;});
+        can.setOnKeyPressed(event -> gameStarted_ = true);
         stackPane.getChildren().add(can);
 
         //setup timeline
@@ -162,7 +156,39 @@ public class Slither extends Application {
                     stackPane.getChildren().remove(finalVBox[0]);
                     finalVBox[0] = null;
                     timeline.play();
-                    //gameStarted_ = false;
+                    gameStarted_ = false;
+                    can.setOnKeyPressed(null);
+
+                    //Add a new key event handler after the game has started again
+                    can.setOnKeyPressed(keyEvent -> {
+                        gameStarted_ = true;
+                        switch (keyEvent.getCode()) {
+                            case UP:
+                                P2.updateDirection(0, -1);
+                                break;
+                            case DOWN:
+                                P2.updateDirection(0, 1);
+                                break;
+                            case LEFT:
+                                P2.updateDirection(-1, 0);
+                                break;
+                            case RIGHT:
+                                P2.updateDirection(1, 0);
+                                break;
+                            case W:
+                                P1.updateDirection(0, -1);
+                                break;
+                            case S:
+                                P1.updateDirection(0, 1);
+                                break;
+                            case A:
+                                P1.updateDirection(-1, 0);
+                                break;
+                            case D:
+                                P1.updateDirection(1, 0);
+                                break;
+                        }
+                    });
                 });
                 vBox.getChildren().add(toggleButton);
 

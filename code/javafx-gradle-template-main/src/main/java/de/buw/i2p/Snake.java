@@ -95,8 +95,6 @@ public class Snake {
         return snakecolor_;
     }
     //for testing remove later
-    public int getxDirection_(){ return xDirection_;}
-    public int getyDirection_(){ return yDirection_;}
     public boolean isAlive_(){return alive_;}
  //setter methods
 }
