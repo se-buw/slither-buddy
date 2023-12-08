@@ -29,7 +29,7 @@ public class Slither extends Application {
 //
     private static final int width_ = 20;
     private static final int height_ = 20;
-    private static final int tileSize_ = 30;
+    private static final int tileSize_ = 20;
     private int playerOneYPos_ = height_/2;
     private int playerTwoYPos_ = height_/2 ;
     private int playerOneXPos_ = width_/4 ;
@@ -37,19 +37,31 @@ public class Slither extends Application {
     private int playerOneScore = 0;
     private int playerTwoScore = 0;
     private boolean gameStarted_ = false;
+    private int anzahl_barriers = 7;
+    private Barrier[] array_barrier = new Barrier[anzahl_barriers];
+
     //create snakes
     private Snake P1 = new Snake(5, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, -1, tileSize_, Color.RED);
     private Snake P2 = new Snake(5, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, -1, tileSize_, Color.BLUE);
 
-    //private ArrayList<Barrier> barriers;
+
+    Canvas foreground = new Canvas(width_ * tileSize_, height_ * tileSize_);
+    Canvas backround = new Canvas(width_ * tileSize_, height_ * tileSize_);
+
+    Canvas barrierground = new Canvas(width_ * tileSize_, height_ * tileSize_);
 
 
+    GraphicsContext backround_gc = backround.getGraphicsContext2D();
+    GraphicsContext foreground_gc = foreground.getGraphicsContext2D();
+    GraphicsContext barrierground_gc = barrierground.getGraphicsContext2D();
+    StackPane stackPane = new StackPane();
 
     @Override
     public void start(Stage stage) {
         stage.setTitle("Slither");
 
         StackPane stackPane = new StackPane();
+
 
         //fill field with background
         Canvas can_background = new Canvas(width_ * tileSize_, height_ * tileSize_);
@@ -87,6 +99,27 @@ public class Slither extends Application {
 
         P1.draw(can_game.getGraphicsContext2D());
         P2.draw(can_game.getGraphicsContext2D());
+      
+        Barrier bar1 = new Barrier("bar1");
+        array_barrier[0] = bar1;
+        Barrier bar2 = new Barrier("bar2");
+        array_barrier[1] = bar2;
+        Barrier bar3 = new Barrier("bar3");
+        array_barrier[2] = bar3;
+        Barrier bar4 = new Barrier("bar4");
+        array_barrier[3] = bar4;
+        Barrier bar5 = new Barrier("bar5");
+        array_barrier[4] = bar5;
+        Barrier bar6 = new Barrier("bar6");
+        array_barrier[5] = bar6;
+        Barrier bar7 = new Barrier("bar7");
+        array_barrier[6] = bar7;
+      
+        for (int i = 0 ; i < 7; i++){
+            array_barrier[i].place_barrier();
+            array_barrier[i].draw_barrier(barrierground_gc);
+        }
+
 
         //setup timeline
         Timeline timeLine = new Timeline();
@@ -113,10 +146,15 @@ public class Slither extends Application {
     }
 
     //runs the game
+
     private void run(Canvas can, StackPane stackPane, Timeline timeline){
         //Canvas can = (Canvas) stackPane.getChildren().get(1);
         GraphicsContext gc = can.getGraphicsContext2D();
         gc.clearRect(0, 0, width_ * tileSize_, height_ * tileSize_);
+  
+        for (int i = 0 ; i < 7; i++){
+                array_barrier[i].draw_barrier(barrierground_gc);
+            }
 
         if (P1.isAlive_() && P2.isAlive_()){
             can.setOnKeyPressed(event -> {
@@ -147,13 +185,14 @@ public class Slither extends Application {
                         P1.updateDirection(1, 0);
                         break;
 
+
                 }
             });
 
             P1.outOfBounds(width_, height_);
             P2.outOfBounds(width_, height_);
-            P1.collision(P2);
-            P2.collision(P1);
+            P1.collision(P2, array_barrier);
+            P2.collision(P1, array_barrier);
 
             P1.move();
             P1.draw(gc);
@@ -183,6 +222,7 @@ public class Slither extends Application {
                 text.setText("Draw!");
             }
 
+
             vBox.getChildren().add(text);
             vBox.setAlignment(Pos.CENTER);
             stackPane.getChildren().add(vBox);
@@ -192,6 +232,7 @@ public class Slither extends Application {
                 new_game(stackPane, can);
 
             });
+
         }
     }
 
