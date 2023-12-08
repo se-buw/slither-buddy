@@ -27,7 +27,7 @@ public class Slither extends Application {
 //
     private static final int width_ = 20;
     private static final int height_ = 20;
-    private static final int tileSize_ = 30;
+    private static final int tileSize_ = 20;
     private int playerOneYPos_ = height_/2;
     private int playerTwoYPos_ = height_/2 ;
     private int playerOneXPos_ = width_/4 ;
@@ -35,11 +35,22 @@ public class Slither extends Application {
     private int playerOneScore = 0;
     private int playerTwoScore = 0;
     private boolean gameStarted_ = false;
+    private int anzahl_barriers = 7;
+    private Barrier[] array_barrier = new Barrier[anzahl_barriers];
+
     //create snakes
     private Snake P1 = new Snake(5, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, -1, tileSize_, Color.RED);
     private Snake P2 = new Snake(5, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, -1, tileSize_, Color.BLUE);
 
+    Canvas foreground = new Canvas(width_ * tileSize_, height_ * tileSize_);
+    Canvas backround = new Canvas(width_ * tileSize_, height_ * tileSize_);
 
+    Canvas barrierground = new Canvas(width_ * tileSize_, height_ * tileSize_);
+
+    GraphicsContext backround_gc = backround.getGraphicsContext2D();
+    GraphicsContext foreground_gc = foreground.getGraphicsContext2D();
+    GraphicsContext barrierground_gc = barrierground.getGraphicsContext2D();
+    StackPane stackPane = new StackPane();
 
     @Override
     public void start(Stage stage) {
@@ -47,28 +58,59 @@ public class Slither extends Application {
 
         StackPane stackPane = new StackPane();
 
-        // create background tiles
-        GridPane grid = new GridPane();
-        for (int i = 0; i < width_; i++){
-            for (int j = 0; j < height_; j++){
-                Pane pane = new Pane();
-                pane.setPrefSize(tileSize_, tileSize_);
-                if ((i+j) % 2 == 0){
-                    pane.setStyle("-fx-background-color: lightgreen;");
+        //the snakes will be drawn on graphics context of the canvas
+
+        foreground.setFocusTraversable(true);
+        foreground.setOnKeyPressed(event -> gameStarted_ = true);
+        stackPane.getChildren().add(backround);
+        stackPane.getChildren().add(barrierground);
+        stackPane.getChildren().add(foreground);
+
+
+        //backround_gc.clearRect(0, 0, width_ * tileSize_, height_ * tileSize_);
+        for (int i = 0; i <= 20; i++){
+            for (int j = 0; j <= 20; j++) {
+                if (i % 2 == 0) {
+                    if (j % 2 == 0) {
+                        backround_gc.setFill(Color.AQUA);
+                        backround_gc.fillRect(20*j, 20*i, 20, 20);
+                    }
+                    else{
+                        backround_gc.setFill(Color.GREY);
+                        backround_gc.fillRect(20*j, 20*i, 20, 20);
+                    }
+                } else {
+                    if (j % 2 == 1) {
+                        backround_gc.setFill(Color.AQUA);
+                        backround_gc.fillRect(20*j, 20*i, 20, 20);
+                    }
+                    else{
+                        backround_gc.setFill(Color.GREY);
+                        backround_gc.fillRect(20*j, 20*i, 20, 20);
+                    }
                 }
-                else{
-                    pane.setStyle("-fx-background-color: darkgreen;");
-                }
-                grid.add(pane, i, j);
             }
         }
-        stackPane.getChildren().add(grid);
 
-        //the snakes will be drawn on graphics context of the canvas
-        Canvas can = new Canvas(width_ * tileSize_, height_ * tileSize_);
-        can.setFocusTraversable(true);
-        can.setOnKeyPressed(event -> gameStarted_ = true);
-        stackPane.getChildren().add(can);
+        Barrier bar1 = new Barrier("bar1");
+        array_barrier[0] = bar1;
+        Barrier bar2 = new Barrier("bar2");
+        array_barrier[1] = bar2;
+        Barrier bar3 = new Barrier("bar3");
+        array_barrier[2] = bar3;
+        Barrier bar4 = new Barrier("bar4");
+        array_barrier[3] = bar4;
+        Barrier bar5 = new Barrier("bar5");
+        array_barrier[4] = bar5;
+        Barrier bar6 = new Barrier("bar6");
+        array_barrier[5] = bar6;
+        Barrier bar7 = new Barrier("bar7");
+        array_barrier[6] = bar7;
+
+        for (int i = 0 ; i < 7; i++){
+            array_barrier[i].place_barrier();
+            array_barrier[i].draw_barrier(barrierground_gc);
+        }
 
         //setup timeline
         Timeline timeLine = new Timeline();
@@ -96,15 +138,17 @@ public class Slither extends Application {
 
     //runs the game
     private void run(StackPane stackPane, Timeline timeline){
-        Canvas can = (Canvas) stackPane.getChildren().get(1);
-        GraphicsContext gc = can.getGraphicsContext2D();
 
-        gc.clearRect(0, 0, width_ * tileSize_, height_ * tileSize_);
+        foreground_gc.clearRect(0, 0, width_ * tileSize_, height_ * tileSize_);
 
         if(gameStarted_) {
 
+            for (int i = 0 ; i < 7; i++){
+                array_barrier[i].draw_barrier(barrierground_gc);
+            }
+
             if (P1.isAlive_() && P2.isAlive_()){
-                can.setOnKeyPressed(event -> {
+                foreground.setOnKeyPressed(event -> {
                     switch(event.getCode()){
 
                         case UP:
@@ -137,30 +181,40 @@ public class Slither extends Application {
 
                 P1.outOfBounds(width_, height_);
                 P2.outOfBounds(width_, height_);
-                P1.collision(P2);
-                P2.collision(P1);
+                P1.collision(P2, array_barrier);
+                P2.collision(P1, array_barrier);
 
                 P1.move();
-                P1.draw(gc);
+                P1.draw(foreground_gc);
                 P2.move();
-                P2.draw(gc);
+                P2.draw(foreground_gc);
             }
             else{
+
+                barrierground_gc.clearRect(0, 0, width_ * tileSize_, height_ * tileSize_);
+
+                for (int i = 0 ; i < 7; i++){
+                    array_barrier[i].place_barrier();
+                    array_barrier[i].draw_barrier(barrierground_gc);
+                }
+
                 timeline.stop();
                 VBox vBox = new VBox();
                 final VBox[] finalVBox = {vBox};
                 ToggleButton toggleButton = new ToggleButton("Play again!");
                 toggleButton.setOnAction(event -> {
+
+
                     P1 = new Snake(5, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, -1, tileSize_, Color.RED);
                     P2 = new Snake(5, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, -1, tileSize_, Color.BLUE);
                     stackPane.getChildren().remove(finalVBox[0]);
                     finalVBox[0] = null;
                     timeline.play();
                     gameStarted_ = false;
-                    can.setOnKeyPressed(null);
+                    foreground.setOnKeyPressed(null);
 
                     //Add a new key event handler after the game has started again
-                    can.setOnKeyPressed(keyEvent -> {
+                    foreground.setOnKeyPressed(keyEvent -> {
                         gameStarted_ = true;
                         switch (keyEvent.getCode()) {
                             case UP:
@@ -227,8 +281,13 @@ public class Slither extends Application {
 
         }
         else {
-            P1.draw(gc);
-            P2.draw(gc);
+
+            P1.draw(foreground_gc);
+            P2.draw(foreground_gc);
+
+            for (int i = 0 ; i < 7; i++){
+                array_barrier[i].draw_barrier(barrierground_gc);
+            }
         }
     }
 
