@@ -29,7 +29,7 @@ public class Slither extends Application {
 //
     private static final int width_ = 20;
     private static final int height_ = 20;
-    private static final int tileSize_ = 20;
+    private static final int tileSize_ = 30;
     private int playerOneYPos_ = height_/2;
     private int playerTwoYPos_ = height_/2 ;
     private int playerOneXPos_ = width_/4 ;
@@ -44,6 +44,8 @@ public class Slither extends Application {
     private Snake P1 = new Snake(5, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, -1, tileSize_, Color.RED);
     private Snake P2 = new Snake(5, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, -1, tileSize_, Color.BLUE);
 
+/*
+
 
     Canvas foreground = new Canvas(width_ * tileSize_, height_ * tileSize_);
     Canvas backround = new Canvas(width_ * tileSize_, height_ * tileSize_);
@@ -55,7 +57,7 @@ public class Slither extends Application {
     GraphicsContext foreground_gc = foreground.getGraphicsContext2D();
     GraphicsContext barrierground_gc = barrierground.getGraphicsContext2D();
     StackPane stackPane = new StackPane();
-
+*/
     @Override
     public void start(Stage stage) {
         stage.setTitle("Slither");
@@ -117,7 +119,7 @@ public class Slither extends Application {
       
         for (int i = 0 ; i < 7; i++){
             array_barrier[i].place_barrier();
-            array_barrier[i].draw_barrier(barrierground_gc);
+            array_barrier[i].draw_barrier(can_game.getGraphicsContext2D());
         }
 
 
@@ -151,10 +153,12 @@ public class Slither extends Application {
         //Canvas can = (Canvas) stackPane.getChildren().get(1);
         GraphicsContext gc = can.getGraphicsContext2D();
         gc.clearRect(0, 0, width_ * tileSize_, height_ * tileSize_);
-  
-        for (int i = 0 ; i < 7; i++){
-                array_barrier[i].draw_barrier(barrierground_gc);
-            }
+
+        P1.outOfBounds(width_, height_);
+        P2.outOfBounds(width_, height_);
+        P1.collision(P2, array_barrier);
+        P2.collision(P1, array_barrier);
+
 
         if (P1.isAlive_() && P2.isAlive_()){
             can.setOnKeyPressed(event -> {
@@ -189,15 +193,14 @@ public class Slither extends Application {
                 }
             });
 
-            P1.outOfBounds(width_, height_);
-            P2.outOfBounds(width_, height_);
-            P1.collision(P2, array_barrier);
-            P2.collision(P1, array_barrier);
-
             P1.move();
             P1.draw(gc);
             P2.move();
             P2.draw(gc);
+
+            for (int i = 0 ; i < 7; i++){
+                array_barrier[i].draw_barrier(can.getGraphicsContext2D());
+            }
         }
         else{
             timeline.stop();

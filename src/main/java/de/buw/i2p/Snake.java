@@ -90,9 +90,14 @@ public class Snake {
         for(SnakeSegment segment : getSnakeSegments_()){
             gc.fillRect(segment.getX() * segmentSize_,segment.getY() * segmentSize_, segmentSize_,segmentSize_);
         }
+
         SnakeSegment head = snakeSegments_.get(0);
-        gc.setFill(Color.GREEN);
-        gc.fillOval(head.getX() * segmentSize_ +10, head.getY()*segmentSize_+10, 3,3);
+        //gc.setFill(Color.WHITE);
+        //gc.fillRect(head.getX() * segmentSize_,head.getY() * segmentSize_, segmentSize_,segmentSize_);
+        gc.setFill(Color.BLACK);
+        gc.fillOval((head.getX() * segmentSize_ + segmentSize_/3.0) - 1.5, (head.getY()*segmentSize_+segmentSize_/2.0)-1.5, 3,3);
+        gc.fillOval((head.getX() * segmentSize_ + segmentSize_* (2.0/3.0))-1.5, (head.getY()*segmentSize_+segmentSize_/2.0)-1.5, 3,3);
+
     }
 
     public void elongate(){
