@@ -8,8 +8,14 @@ import java.util.ArrayList;
 
 public class Barrier {
 
-    public Barrier(String name){
-        name_ = name;
+    private Color color = Color.GREENYELLOW;
+    private int segmentSize;
+    private int pos_x;
+    private int pos_y;
+
+
+    public Barrier(int segmentSize){
+        this.segmentSize = segmentSize;
     }
     void place_barrier(){
         Random random = new Random();
@@ -26,21 +32,14 @@ public class Barrier {
     }
 
     void draw_barrier(GraphicsContext gc){
-        gc.setFill(Color.GREENYELLOW);
-        gc.fillRect(pos_x * segmentSize_, pos_y * segmentSize_, segmentSize_, segmentSize_);
+        gc.setFill(color);
+        gc.fillRect(pos_x * segmentSize, pos_y * segmentSize, segmentSize, segmentSize);
     };
 
     boolean collision_barrier(int head_x, int head_y){
-        if (pos_x == head_x && pos_y == head_y) {
-            return true;
-        }
-        return false;
+        return (pos_x == head_x && pos_y == head_y);
     }
 
-    private Color color = Color.GREEN;
-    private int segmentSize_ = 30;
-    private int pos_x;
-    private int pos_y;
-    private String name_;
+
 
 }
