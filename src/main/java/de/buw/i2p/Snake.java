@@ -77,7 +77,6 @@ public class Snake {
         }
         //collision with barrier
         for(Barrier bar : array_barrier){
-            //System.out.println(head.getX() + ";"+ head.getY() + "/n");
             if (bar.collision_barrier((int)(head.getX()), (int)head.getY())) {
                 alive_ = false;
                 break;
@@ -90,9 +89,12 @@ public class Snake {
         for(SnakeSegment segment : getSnakeSegments_()){
             gc.fillRect(segment.getX() * segmentSize_,segment.getY() * segmentSize_, segmentSize_,segmentSize_);
         }
+
         SnakeSegment head = snakeSegments_.get(0);
-        gc.setFill(Color.GREEN);
-        gc.fillOval(head.getX() * segmentSize_ +10, head.getY()*segmentSize_+10, 3,3);
+        gc.setFill(Color.BLACK);
+        gc.fillOval((head.getX() * segmentSize_ + segmentSize_/3.0) - 1.5, (head.getY()*segmentSize_+segmentSize_/2.0)-1.5, 3,3);
+        gc.fillOval((head.getX() * segmentSize_ + segmentSize_* (2.0/3.0))-1.5, (head.getY()*segmentSize_+segmentSize_/2.0)-1.5, 3,3);
+
     }
 
     public void elongate(){
