@@ -90,6 +90,7 @@ public class Snake {
             gc.fillRect(segment.getX() * segmentSize_,segment.getY() * segmentSize_, segmentSize_,segmentSize_);
         }
 
+        // draws eyes on the head of the snake
         SnakeSegment head = snakeSegments_.get(0);
         gc.setFill(Color.BLACK);
         gc.fillOval((head.getX() * segmentSize_ + segmentSize_/3.0) - 1.5, (head.getY()*segmentSize_+segmentSize_/2.0)-1.5, 3,3);
