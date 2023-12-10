@@ -50,7 +50,7 @@ public class Slither extends Application {
         StackPane stackPane = new StackPane();
 
 
-        //fill field with background
+        // create and fill Canvas for background
         Canvas can_background = new Canvas(width_ * tileSize_, height_ * tileSize_);
         GraphicsContext gc_background = can_background.getGraphicsContext2D();
         for(int i= 0; i < width_; i++){
@@ -64,34 +64,38 @@ public class Slither extends Application {
                 gc_background.fillRect(tileSize_*j, tileSize_*i, tileSize_, tileSize_);
             }
         }
-        stackPane.getChildren().add(can_background);
+        stackPane.getChildren().add(can_background); // Add Canvas to StackPane
 
-        //the snakes will be drawn on graphics context of the canvas
+        // create Canvas for the Snakes
         Canvas can_game = new Canvas(width_ * tileSize_, height_ * tileSize_);
         can_game.setFocusTraversable(true);
-        stackPane.getChildren().add(can_game);
+        stackPane.getChildren().add(can_game); // Add Canvas to StackPane
 
+        // create Canvas for the Barriers
         Canvas can_barrier = new Canvas(width_ * tileSize_, height_ * tileSize_);
-        stackPane.getChildren().add(can_barrier);
+        stackPane.getChildren().add(can_barrier); // Add Canvas to StackPane
 
         stage.setScene(new Scene(stackPane));
         stage.setResizable(false);
         stage.show();
 
-        new_game(stackPane/*, can_game*/);
+        new_game(stackPane);
 
     }
 
-    public void new_game(StackPane stackPane/*, Canvas can_game*/){
+    // starts new game
+    public void new_game(StackPane stackPane){
 
         Canvas can_barrier = (Canvas) stackPane.getChildren().get(2);
         Canvas can_game = (Canvas) stackPane.getChildren().get(1);
 
+        // instantiate and draw snakes
         P1 = new Snake(5, new SnakeSegment(playerOneXPos_, playerOneYPos_), 0, -1, tileSize_, Color.PURPLE);
         P2 = new Snake(5, new SnakeSegment(playerTwoXPos_, playerTwoYPos_), 0, -1, tileSize_, Color.ORANGERED);
         P1.draw(can_game.getGraphicsContext2D());
         P2.draw(can_game.getGraphicsContext2D());
 
+        // instatiate and draw barriers
         can_barrier.getGraphicsContext2D().clearRect(0, 0, width_ * tileSize_, height_ * tileSize_);
         for(int i = 0; i < anzahl_barriers; i++){
             array_barrier[i] = new Barrier(tileSize_);
@@ -123,13 +127,13 @@ public class Slither extends Application {
 
     }
 
-    //runs the game
-
+    //runs the actions of one frame
     private void run(StackPane stackPane, Timeline timeline){
         Canvas can_game = (Canvas) stackPane.getChildren().get(1);
         GraphicsContext gc = can_game.getGraphicsContext2D();
-        gc.clearRect(0, 0, width_ * tileSize_, height_ * tileSize_);
+        gc.clearRect(0, 0, width_ * tileSize_, height_ * tileSize_); // clear snake-canvas to draw snakes in their new position
 
+        // check whether both snakes sould still be alive
         P1.outOfBounds(width_, height_);
         P2.outOfBounds(width_, height_);
         P1.collision(P2, array_barrier);
@@ -169,6 +173,7 @@ public class Slither extends Application {
                 }
             });
 
+            // move and draw snakes in their new position
             P1.move();
             P1.draw(gc);
             P2.move();
@@ -205,7 +210,7 @@ public class Slither extends Application {
 
             toggleButton.setOnAction(event -> {
                 stackPane.getChildren().remove(vBox);
-                new_game(stackPane);
+                new_game(stackPane); //start new game
 
             });
 
