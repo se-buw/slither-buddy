@@ -213,13 +213,14 @@ public class Slither extends Application {
                 new_game(stackPane); //start new game
 
             });
-
         }
     }
 
 
     public static void main(String[] args) {
-        launch();
+    	test.testSnakeOutOfBounds();
+    	test.testSnakeElongation();
+    	launch();
     }
 
 
