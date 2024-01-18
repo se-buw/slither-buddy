@@ -36,7 +36,7 @@ public class Slither extends Application {
     private int playerTwoXPos_ = width_ - width_/4;
     private int playerOneScore = 0;
     private int playerTwoScore = 0;
-    private int anzahl_barriers = 7;
+    private int anzahl_barriers = 3000;
     private Barrier[] array_barrier = new Barrier[anzahl_barriers];
 
     //create snakes

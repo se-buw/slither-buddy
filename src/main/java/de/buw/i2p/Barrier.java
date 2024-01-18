@@ -20,10 +20,10 @@ public class Barrier {//new barrierclass
     void place_barrier(){
         Random random = new Random();
 
-        int x = random.nextInt(19);//random value between 0 and 19
-        int y = random.nextInt(19);
+        int x = random.nextInt(20);//random value between 0 and 19
+        int y = random.nextInt(20);
         //prevents barriers for beeing set on a field where one of the snakes starts
-        if (x == 5 || x == 15 && y <= 15 && y >= 9){
+        if ((x == 5 || x == 15) && y <= 15 && y >= 9){
             x =+ 1;
         }
 
