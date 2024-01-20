@@ -79,7 +79,7 @@ public class Snake {
         for(Barrier bar : array_barrier){
             if (bar.collision_barrier((int)(head.getX()), (int)head.getY())) {
                 alive_ = false;
-                break;
+                //break;
             }
         }
     }
@@ -92,9 +92,15 @@ public class Snake {
 
         // draws eyes on the head of the snake
         SnakeSegment head = snakeSegments_.get(0);
+        SnakeSegment body = snakeSegments_.get(1);
         gc.setFill(Color.BLACK);
-        gc.fillOval((head.getX() * segmentSize_ + segmentSize_/3.0) - 1.5, (head.getY()*segmentSize_+segmentSize_/2.0)-1.5, 3,3);
-        gc.fillOval((head.getX() * segmentSize_ + segmentSize_* (2.0/3.0))-1.5, (head.getY()*segmentSize_+segmentSize_/2.0)-1.5, 3,3);
+        if(head.getX()== body.getX()) {
+        	gc.fillOval((head.getX() * segmentSize_ + segmentSize_/3.0) - 1.5, (head.getY()*segmentSize_+segmentSize_/2.0)-1.5, 3,3);
+        	gc.fillOval((head.getX() * segmentSize_ + segmentSize_* (2.0/3.0))-1.5, (head.getY()*segmentSize_+segmentSize_/2.0)-1.5, 3,3);
+        }else {
+        	gc.fillOval((head.getX()*segmentSize_+segmentSize_/2.0)-1.5, (head.getY() * segmentSize_ + segmentSize_/3.0) - 1.5, 3, 3);
+        	gc.fillOval((head.getX()*segmentSize_+segmentSize_/2.0)-1.5, (head.getY() * segmentSize_ + segmentSize_* (2.0/3.0))-1.5, 3,3);
+        }
 
     }
 
