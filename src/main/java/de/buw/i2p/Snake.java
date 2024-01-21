@@ -56,7 +56,7 @@ public class Snake {
 
     public void outOfBounds(int width, int height){
         SnakeSegment head = snakeSegments_.get(0);
-        if (head.getX() <= 0 || head.getX() >= width || head.getY() <= 0 || head.getY() >= height){
+        if (head.getX() < 0 || head.getX() >= width || head.getY() < 0 || head.getY() >= height){
             alive_ = false;
         }
     }
