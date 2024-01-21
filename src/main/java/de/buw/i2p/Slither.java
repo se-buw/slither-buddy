@@ -199,7 +199,7 @@ public class Slither extends Application {
                 text.setText("P1 won!");
             }
             else{
-                text.setFill(Color.PURPLE);
+                text.setFill(Color.GREEN);
                 text.setText("Draw!");
             }
 
