@@ -106,12 +106,11 @@ public class Slither extends Application {
         //setup timeline
         Timeline timeLine = new Timeline();
         timeLine.setCycleCount(Timeline.INDEFINITE);
-
+        
         Duration cycleDur = Duration.millis(500);
         AtomicInteger executionCount = new AtomicInteger(0);
         KeyFrame keyframe = new KeyFrame(cycleDur, event -> {
             run(stackPane, timeLine);
-
             int count = executionCount.incrementAndGet();
             if (count % 5 == 0) {
                 P1.elongate();
@@ -129,6 +128,8 @@ public class Slither extends Application {
 
     //runs the actions of one frame
     private void run(StackPane stackPane, Timeline timeline){
+    	 final boolean[] direction1 = {true};
+    	 final boolean[] direction2 = {true};
         Canvas can_game = (Canvas) stackPane.getChildren().get(1);
         GraphicsContext gc = can_game.getGraphicsContext2D();
         gc.clearRect(0, 0, width_ * tileSize_, height_ * tileSize_); // clear snake-canvas to draw snakes in their new position
@@ -145,31 +146,53 @@ public class Slither extends Application {
                 switch(event.getCode()){
 
                     case UP:
-                        P2.updateDirection(0, -1);
+                    	if(direction2[0]) {
+                    		P2.updateDirection(0, -1);
+                    		direction2[0] = false;
+                    	}
                         break;
                     case DOWN:
-                        P2.updateDirection(0, 1);
+                    	if(direction2[0]) {
+                    		P2.updateDirection(0, 1);
+                    		direction2[0] = false;
+                    	}
                         break;
                     case LEFT:
-                        P2.updateDirection(-1, 0);
+                    	if(direction2[0]) {
+                    		P2.updateDirection(-1, 0);
+                    		direction2[0] = false;
+                    	}
                         break;
                     case RIGHT:
-                        P2.updateDirection(1, 0);
+                    	if(direction2[0]) {
+                    		P2.updateDirection(1, 0);
+                    		direction2[0] = false;
+                    	}
                         break;
                     case W:
-                        P1.updateDirection(0, -1);
+                    	if(direction1[0]) {
+                    		P1.updateDirection(0, -1);
+                    		direction1[0] = false;
+                    	}
                         break;
                     case S:
-                        P1.updateDirection(0, 1);
+                    	if(direction1[0]) {
+                    		P1.updateDirection(0, 1);
+                    		direction1[0] = false;
+                    	}
                         break;
                     case A:
-                        P1.updateDirection(-1, 0);
+                    	if(direction1[0]) {
+                    		P1.updateDirection(-1, 0);
+                    		direction1[0] = false;
+                    	}
                         break;
                     case D:
-                        P1.updateDirection(1, 0);
+                    	if(direction1[0]) {
+                    		P1.updateDirection(1, 0);
+                    		direction1[0] = false;
+                    	}
                         break;
-
-
                 }
             });
 
