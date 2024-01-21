@@ -144,7 +144,7 @@ public class Slither extends Application {
         if (P1.isAlive_() && P2.isAlive_()){
             can_game.setOnKeyPressed(event -> {
                 switch(event.getCode()){
-
+                //direction sorgt dafür, dass nicht 2 Inputs im selben Keyframe verarbeitet werden.
                     case UP:
                     	if(direction2[0]) {
                     		P2.updateDirection(0, -1);
